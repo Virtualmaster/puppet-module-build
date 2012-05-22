@@ -6,18 +6,11 @@
 # }
 define build::install ($download, $creates, $pkg_folder='', $pkg_format="tar", $pkg_extension="", $buildoptions="", $extractorcmd="", $rm_build_folder=true) {
   
-  #build::requires { "$name-requires-build-essential":  package => 'build-essential' }
-  #included in boot code and breaks the rest
-  
-  Exec {
-    unless => "$test -f $creates",
-  }
-  
   $cwd    = "/usr/local/src"
   
   $test   = "/usr/bin/test"
   $unzip  = "/usr/bin/unzip"
-  $tar    = "/usr/sbin/tar"
+  $tar    = "/bin/tar"
   $bunzip = "/usr/bin/bunzip2"
   $gunzip = "/usr/bin/gunzip"
   
@@ -40,6 +33,10 @@ define build::install ($download, $creates, $pkg_folder='', $pkg_format="tar", $
     bzip    => "$bunzip -c $cwd/$filename | $tar -xf -",
     tar     => "$gunzip < $cwd/$filename | $tar -xf -",
     default => $extractorcmd,
+  }
+
+  Exec {
+    unless => "$test -f $creates",
   }
   
   exec { "download_$name":
