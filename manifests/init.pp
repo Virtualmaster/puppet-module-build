@@ -19,7 +19,7 @@ define build::install ($download, $creates, $pkg_folder='', $pkg_format="tar", $
   $extension = $pkg_format ? {
     zip     => ".zip",
     bzip    => ".tar.bz2",
-    tar     => ".tar.gz",
+    tar     => ".tgz",
     default => $pkg_extension,
   }
   
