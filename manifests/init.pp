@@ -42,27 +42,27 @@ define build::install ($download, $creates, $pkg_folder='', $pkg_format="tar", $
     default => $extractorcmd,
   }
   
-  exec { "download-$name":
+  exec { "download_$name":
     cwd     => "$cwd",
     command => "/usr/bin/wget -q $download",
     timeout => 120, # 2 minutes
   }
   
-  exec { "extract-$name":
+  exec { "extract_$name":
     cwd     => "$cwd",
     command => "$extractor",
     timeout => 120, # 2 minutes
     require => Exec["download-$name"],
   }
   
-  exec { "config-$name":
+  exec { "config_$name":
     cwd     => "$cwd/$foldername",
     command => "$cwd/$foldername/configure $buildoptions",
     timeout => 120, # 2 minutes
     require => Exec["extract-$name"],
   }
   
-  exec { "make-install-$name":
+  exec { "make_install_$name":
     cwd     => "$cwd/$foldername",
     command => "/usr/bin/make && /usr/bin/make install",
     timeout => 600, # 10 minutes
@@ -73,7 +73,7 @@ define build::install ($download, $creates, $pkg_folder='', $pkg_format="tar", $
   case $rm_build_folder {
     true: {
       notice("remove build folder")
-      exec { "remove-$name-build-folder":
+      exec { "remove_$name_build_folder":
         cwd     => "$cwd",
         command => "/usr/bin/rm -rf $cwd/$foldername",
         require => Exec["make-install-$name"],
