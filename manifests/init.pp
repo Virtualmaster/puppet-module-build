@@ -4,10 +4,10 @@
 #   download => 'http://www.unixtop.org/dist/top-3.7.tar.gz',
 #   creates  => '/usr/local/bin/top',
 # }
-
 define build::install ($download, $creates, $pkg_folder='', $pkg_format="tar", $pkg_extension="", $buildoptions="", $extractorcmd="", $rm_build_folder=true) {
   
-  build::requires { "$name-requires-build-essential":  package => 'build-essential' }
+  #build::requires { "$name-requires-build-essential":  package => 'build-essential' }
+  #included in boot code and breaks the rest
   
   Exec {
     unless => "$test -f $creates",
