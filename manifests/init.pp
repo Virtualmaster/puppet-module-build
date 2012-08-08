@@ -53,20 +53,19 @@ define build::install ($download, $creates, $configure=true, $pkg_folder='', $pk
   
   exec { "config_$name":
     cwd     => "$cwd/$foldername",
-    command => "$cwd/$foldername/configure $buildoptions",
+    command => $configure ? {
+      true => "$cwd/$foldername/configure $buildoptions",
+      default => "/bin/true"
+    },
     timeout => 120, # 2 minutes
     require => Exec["extract_$name"],
-    onlyif => $configure,
   }
   
   exec { "make_install_$name":
     cwd     => "$cwd/$foldername",
     command => "/usr/bin/make && /usr/bin/make install",
     timeout => 600, # 10 minutes
-    require => $configure ? {
-       false => Exec["extract_$name"],
-       default => Exec["config_$name"]
-    },
+    require => Exec["config_$name"],
   }
   
   # remove build folder
