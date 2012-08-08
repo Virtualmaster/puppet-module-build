@@ -18,7 +18,8 @@ define build::install ($download, $creates, $configure=true, $pkg_folder='', $pk
   $extension = $pkg_format ? {
     zip     => ".zip",
     bzip    => ".tar.bz2",
-    tar     => ".tar.gz",
+    tar     => ".tar",
+    targz     => ".tar.gz",
     default => $pkg_extension,
   }
   
@@ -31,6 +32,7 @@ define build::install ($download, $creates, $configure=true, $pkg_folder='', $pk
     zip     => "$unzip -q -d $cwd $cwd/$filename",
     bzip    => "$bunzip -c $cwd/$filename | $tar -xf -",
     tar     => "$gunzip < $cwd/$filename | $tar -xf -",
+    targz   => "$gunzip < $cwd/$filename | $tar -xf -",
     default => $extractorcmd,
   }
 
