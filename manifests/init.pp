@@ -4,10 +4,9 @@
 #   download => 'http://www.unixtop.org/dist/top-3.7.tar.gz',
 #   creates  => '/usr/local/bin/top',
 # }
-define build::install ($download, $creates, $pkg_folder='', $pkg_format="tar", $pkg_extension="", $buildoptions="", $extractorcmd="", $rm_build_folder=true) {
+define build::install ($download, $creates, $configure=true, $pkg_folder='', $pkg_format="tar", $pkg_extension="", $buildoptions="", $extractorcmd="", $rm_build_folder=true) {
   
   $cwd    = "/usr/local/src"
-  
   $test   = "/usr/bin/test"
   $unzip  = "/usr/bin/unzip"
   $tar    = "/bin/tar"
@@ -57,13 +56,17 @@ define build::install ($download, $creates, $pkg_folder='', $pkg_format="tar", $
     command => "$cwd/$foldername/configure $buildoptions",
     timeout => 120, # 2 minutes
     require => Exec["extract_$name"],
+    onlyif => $configure,
   }
   
   exec { "make_install_$name":
     cwd     => "$cwd/$foldername",
     command => "/usr/bin/make && /usr/bin/make install",
     timeout => 600, # 10 minutes
-    require => Exec["config_$name"],
+    require => $configure ? {
+       false => Exec["extract_$name"],
+       default => Exec["config_$name"]
+    },
   }
   
   # remove build folder
