@@ -10,8 +10,8 @@ define build::install ($download, $creates, $configure=true, $patch_path = false
   $test   = "/usr/bin/test"
   $unzip  = "/usr/bin/unzip"
   $tar    = "/bin/tar"
-  $bunzip = "/usr/bunzip2"
-  $gunzip = "/usr/gunzip"
+  $bunzip = "/bin/bunzip2"
+  $gunzip = "/bin/gunzip"
   
   $filename = basename($download)
   
