@@ -56,7 +56,7 @@ define build::install ($download, $creates, $configure=true, $patch_path = false
   if $patch_path != false {
     exec { "patch_$name":
       cwd     => "$cwd/$foldername",
-      command => "patch -p0 < ${patch_path}",
+      command => "/usr/bin/patch -p0 < ${patch_path}",
       timeout => 120, 
       require => Exec["download_$name"],
     }
