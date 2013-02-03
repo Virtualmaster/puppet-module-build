@@ -4,7 +4,7 @@
 #   download => 'http://www.unixtop.org/dist/top-3.7.tar.gz',
 #   creates  => '/usr/local/bin/top',
 # }
-define build::install ($download, $creates, $configure=true, $pkg_folder='', $pkg_format="tar", $pkg_extension="", $buildoptions="", $extractorcmd="", $rm_build_folder=true) {
+define build::install ($download, $creates, $configure=true, $patch_path = false, $pkg_folder='', $pkg_format="tar", $pkg_extension="", $buildoptions="", $extractorcmd="", $rm_build_folder=true) {
   
   $cwd    = "/usr/local/src"
   $test   = "/usr/bin/test"
@@ -51,6 +51,15 @@ define build::install ($download, $creates, $configure=true, $pkg_folder='', $pk
     command => "$extractor",
     timeout => 120, # 2 minutes
     require => Exec["download_$name"],
+  }
+
+  if $patch_path != false {
+    exec { "patch_$name":
+      cwd     => "$cwd/$foldername",
+      command => "patch -p0 < ${patch_path}",
+      timeout => 120, 
+      require => Exec["download_$name"],
+    }
   }
   
   exec { "config_$name":
